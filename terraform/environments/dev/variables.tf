@@ -19,3 +19,10 @@ variable "env_name" {
   description = "The environment name of the project"
   type        = string
 }
+
+# --- Secrets ---
+
+variable "DOCKER_SWARM_KEY_PAIR_PATH" {
+  description = "The local key pair path needed to store the Docker Swarm SSH key"
+  type        = string
+}
