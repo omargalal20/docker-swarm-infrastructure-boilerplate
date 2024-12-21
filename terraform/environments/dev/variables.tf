@@ -26,3 +26,18 @@ variable "DOCKER_SWARM_KEY_PAIR_PATH" {
   description = "The local key pair path needed to store the Docker Swarm SSH key"
   type        = string
 }
+
+variable "DATABASE_NAME" {
+  description = "The name for the database"
+  type        = string
+}
+
+variable "DATABASE_PASSWORD" {
+  description = "The password for the database"
+  type        = string
+}
+
+variable "DATABASE_USER" {
+  description = "The password for the database"
+  type        = string
+}

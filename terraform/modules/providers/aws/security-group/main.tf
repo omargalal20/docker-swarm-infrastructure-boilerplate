@@ -4,7 +4,7 @@
 #
 ##############################################################
 
-resource "aws_security_group" "node_sg" {
+resource "aws_security_group" "resource_sg" {
   name   = var.name
   vpc_id = var.vpc_id
 

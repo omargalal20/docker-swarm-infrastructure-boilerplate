@@ -180,3 +180,59 @@ module "docker_swarm" {
     security_group_id = module.worker_security_group.security_group_id
   }
 }
+
+##############################################################
+#
+# Database Modules
+#
+##############################################################
+
+
+module "database_security_group" {
+  source = "../../modules/providers/aws/security-group"
+  name   = "${local.namespace}-database-sg"
+  vpc_id = module.network.vpc_id
+
+  ingress_rules = [
+    {
+      from_port   = 5432
+      to_port     = 5432
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  ]
+
+  egress_rules = [
+    {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  ]
+}
+
+module "database" {
+  source    = "../../modules/providers/aws/database"
+  vpc       = module.network.vpc
+  namespace = local.namespace
+
+  database_config = {
+    instance_class             = "db.t3.micro"
+    engine                     = "postgres"
+    engine_version             = "16.5"
+    password                   = var.DATABASE_PASSWORD
+    username                   = var.DATABASE_USER
+    name                       = var.DATABASE_NAME
+    allocated_storage          = 10
+    backup_retention           = 0
+    instance_identifier        = "${local.namespace}-db"
+    storage_type               = "gp2"
+    port                       = 5432
+    security_group_ids         = [module.database_security_group.security_group_id]
+    auto_minor_version_upgrade = true
+    skip_final_snapshot        = true
+    multi_az                   = false
+    storage_encrypted          = true
+  }
+}
