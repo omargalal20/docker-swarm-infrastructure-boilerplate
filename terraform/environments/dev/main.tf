@@ -17,6 +17,22 @@ module "iam" {
   namespace    = local.namespace
 }
 
+module "ecr" {
+  for_each     = toset(["${var.project_name}-backend-repo", "${var.project_name}-frontend-repo"])
+  source       = "../../modules/providers/aws/ecr"
+  vpc          = module.network.vpc
+  project_name = var.project_name
+  env_name     = var.env_name
+  namespace    = local.namespace
+  name         = each.key
+}
+
+##############################################################
+#
+# Docker Swarm Modules
+#
+##############################################################
+
 module "manager_security_group" {
   source = "../../modules/providers/aws/security-group"
   name   = "${local.namespace}-docker-swarm-manager-node-sg"
@@ -158,9 +174,9 @@ module "docker_swarm" {
   }
 
   worker_node_config = {
-    instance_type = "t3.micro"
-    storage       = 30
-    subnet_id     = module.network.public_subnets[1]
+    instance_type     = "t3.micro"
+    storage           = 30
+    subnet_id         = module.network.public_subnets[1]
     security_group_id = module.worker_security_group.security_group_id
   }
 }
