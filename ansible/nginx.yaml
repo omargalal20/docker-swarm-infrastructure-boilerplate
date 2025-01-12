@@ -1,0 +1,10 @@
+---
+- name: Install Nginx
+  hosts: all
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  remote_user: ec2-user
+  become: true
+
+  roles:
+    - nginx

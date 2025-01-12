@@ -1,0 +1,14 @@
+---
+- name: Update package cache and ensure Nginx is at the latest version
+  become: true
+  ansible.builtin.yum:
+    name: nginx
+    state: latest
+    use_backend: "yum"
+
+- name: Make sure Nginx is running
+  become: true
+  systemd:
+    name: nginx
+    state: started
+    enabled: true
